@@ -41,19 +41,15 @@ bot.on("message", async message => {
     bot.user.setActivity(args.join(" "), { type: 'WATCHING' });
   }
 
-  if(command === "test"){
+  if(command === "тест"){
      // for (member in bot.guilds.get(message.guild.id).members) {
      //    console.log(member.id);
      // }
-     guild.fetchMember(message.author)
-  .then(console.log)
-  .catch(console.error);
-     for (m in bot.members.user) {
-         console.log(m.id);
+     for (member in message.member.user) {
+         console.log(member.id);
      }
 
   }
-
   // Let's go with a few common example commands! Feel free to delete or change those.
   if(command === "скажи") {
     // makes the bot say something and delete the message. As an example, it's open to anyone to use.
@@ -79,18 +75,26 @@ bot.on("message", async message => {
     },
     title: "Привет, я - Эш, бесполезный бот созданный бездельником :ok_hand:",
     url: "http://vk.com/ghousemd",
-    description: "Вот список того что я умею:",
+    description: "Вот список того что я умею(регистр не важен):",
     fields: [{
-        name: "эш скажи <текст>",
+        name: "Эш скажи <текст>",
         value: "Скажу за тебя все, что угодно. Не волнуйся, я тебя не выдам."
       },
       {
-        name: "эш смотри <текст>",
+        name: "Эш смотри <текст>",
         value: "Посоветуй мне что смотреть(только не аниме, пожалуйста)."
       },
       {
-        name: "эш <вопрос>",
+        name: "Эш <вопрос>",
         value: "Напиши мне вопрос и я обязательно отвечу."
+      },
+      {
+        name: "рандом <сообщение>",
+        value: "Отправлю сообщение рандомному человеку."
+      },
+      {
+        name: "ash play <название трека или ссылка на видео или плейлист YouTube>",
+        value: "Проигрываю заказанную музыку. Необходимо быть в войсе"
       },
       {
         name: "Coming soon..",
@@ -205,7 +209,17 @@ bot.on("message", async message => {
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
      message.channel.send("<:bubabrain:351764290895872002>");
   }
+  if(command === "рандом"){
+//     let roleName = args.join(" ");
 
+//     //Filtering the guild members only keeping those with the role
+//     //Then mapping the filtered array to their usernames
+//     let membersWithRole = message.guild.members.map(member => {return member.user.username;})
+
+
+
+    return message.channel.send(message.guild.members.random().toString()+' '+args.join(" "));
+}
   if(command === "count") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
@@ -219,7 +233,7 @@ message.channel.send(memberCount+" участников");
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
     const m = await message.channel.send("Ping?");
-    m.edit(`Pong! Твой пинг ${m.createdTimestamp - message.createdTimestamp}ms. API пинг ${Math.round(bot.ping)}ms`);
+    m.edit(`Pong.. Твой пинг ${m.createdTimestamp - message.createdTimestamp}ms. API пинг ${Math.round(bot.ping)}ms`);
   }
 
 
