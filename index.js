@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const config = require("./config.json");
+const Music = require('discord.js-musicbot-addon');
 
 
 var bot = new Discord.Client();
@@ -8,7 +9,6 @@ function randomInteger(min, max) {
     rand = Math.round(rand);
     return rand;
   }
-
 bot.on("ready", async() => {
   console.log(`${bot.user.username} готов к работе`);
   try {
@@ -18,6 +18,9 @@ bot.on("ready", async() => {
     console.log(e.stack);
   }
 });
+const music = new Music(bot, {
+  youtubeKey: 'AIzaSyDmIvnkWSrqJ0XAxu7hxSNilk8di1jNz48'
+});
 bot.on("message", async message => {
   // This event will run on every single message received, from any channel or DM.
 
@@ -25,6 +28,7 @@ bot.on("message", async message => {
   // and not get into a spam loop (we call that "botception").
   if(message.author.bot) return;
   msg = message.content.toLowerCase();
+
   if(msg.indexOf(config.prefixt)!== 0) return;
 
   // Here we separate our "command" name, and our "arguments" for the command.
@@ -38,9 +42,13 @@ bot.on("message", async message => {
   }
 
   if(command === "тест"){
-     for (member in bot.guilds.get(message.guild.id).members) {
-        console.log(member.id);
+     // for (member in bot.guilds.get(message.guild.id).members) {
+     //    console.log(member.id);
+     // }
+     for (member in message.member.guildmember) {
+         console.log(member.nickname);
      }
+
   }
   // Let's go with a few common example commands! Feel free to delete or change those.
   if(command === "скажи") {
@@ -51,6 +59,12 @@ bot.on("message", async message => {
     message.delete().catch(O_o=>{});
     // And we get the bot to say the thing:
     message.channel.send(sayMessage);
+  }
+    if(command === "спать") {
+  if (message.author.id != 161854983602438145) return message.reply('Нет, ты не можешь меня выключать.');
+    await message.channel.send('Пока :sleeping:');
+    process.exit(0);
+
   }
   if(command === `помощь`){
     message.channel.send({embed: {
