@@ -41,15 +41,19 @@ bot.on("message", async message => {
     bot.user.setActivity(args.join(" "), { type: 'WATCHING' });
   }
 
-  if(command === "тест"){
+  if(command === "test"){
      // for (member in bot.guilds.get(message.guild.id).members) {
      //    console.log(member.id);
      // }
-     for (member in message.member.guildmember) {
-         console.log(member.nickname);
+     guild.fetchMember(message.author)
+  .then(console.log)
+  .catch(console.error);
+     for (m in bot.members.user) {
+         console.log(m.id);
      }
 
   }
+
   // Let's go with a few common example commands! Feel free to delete or change those.
   if(command === "скажи") {
     // makes the bot say something and delete the message. As an example, it's open to anyone to use.
@@ -201,6 +205,7 @@ bot.on("message", async message => {
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
      message.channel.send("<:bubabrain:351764290895872002>");
   }
+
   if(command === "count") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
@@ -214,7 +219,7 @@ message.channel.send(memberCount+" участников");
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
     const m = await message.channel.send("Ping?");
-    m.edit(`Pong.. Твой пинг ${m.createdTimestamp - message.createdTimestamp}ms. API пинг ${Math.round(bot.ping)}ms`);
+    m.edit(`Pong! Твой пинг ${m.createdTimestamp - message.createdTimestamp}ms. API пинг ${Math.round(bot.ping)}ms`);
   }
 
 
