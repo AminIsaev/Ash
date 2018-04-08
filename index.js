@@ -1,6 +1,14 @@
 const Discord = require("discord.js");
 const config = require("./config.json");
 const Music = require('discord.js-musicbot-addon');
+const http = require('http');
+const express = require('express');
+const app = express();
+
+app.listen(8080);
+setInterval(() => {
+http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 300000);
 
 
 var bot = new Discord.Client();
@@ -73,7 +81,7 @@ bot.on("message", async message => {
       name: bot.user.username,
       icon_url: bot.user.avatarURL
     },
-    title: "Привет, я - Эш, бесполезный бот созданный бездельником :ok_hand:",
+    title: "Привет, я - Эш, не бесполезный((с)Fairy) бот созданный бездельником :ok_hand:",
     url: "http://vk.com/ghousemd",
     description: "Вот список того что я умею(регистр не важен):",
     fields: [{
@@ -95,7 +103,7 @@ bot.on("message", async message => {
       {
         name: "ash play <название трека или ссылка на видео или плейлист YouTube>",
         value: "Проигрываю заказанную музыку. Необходимо быть в войсе"
-      },
+      },      
       {
         name: "Coming soon..",
         value: "xD"
@@ -109,10 +117,11 @@ bot.on("message", async message => {
   }
 });
   }
-  if(command === "смотри") {
-    // makes the bot say something and delete the message. As an example, it's open to anyone to use.
-    // To get the "message" itself we join the `args` back into a string with spaces:
-    bot.user.setActivity(args.join(" "), { type: 'WATCHING' });
+  if(command === "смотри" || command === "слушай" || command === "играй") {
+    if(command === "смотри") var d = "WATCHING";
+    if(command === "слушай") var d = "LISTENING";
+    if(command === "играй") var d = "PLAYING";
+    bot.user.setActivity(args.join(" "), { type: d });
   }
 
   if(msg.indexOf("?") + 1){
@@ -177,12 +186,10 @@ bot.on("message", async message => {
   // It's good practice to ignore other bots. This also makes your bot ignore itself
   // and not get into a spam loop (we call that "botception").
   if(message.author.bot) return;
+  
   msg = message.content.toLowerCase();
-  if(msg.indexOf("баб") === 0) { message.channel.send("<:bubabrain:351764290895872002>"); }
-  if(msg.indexOf("тупой бот") === 0) { message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
-  if(msg.indexOf("глупый бот") === 0) { message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
-  if(msg.indexOf("тупой эш") === 0) { message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
-  if(msg.indexOf("глупый эш") === 0) { message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
+  if(msg.indexOf("баб") + 1) { message.channel.send("<:bubabrain:351764290895872002>"); }
+  if((msg.indexOf("тупой") + 1 || msg.indexOf("глупый") + 1) && (msg.indexOf("бот") + 1 || msg.indexOf("эш") + 1)){ message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
 
   // Here we separate our "command" name, and our "arguments" for the command.
   // e.g. if we have the message "+say Is this the real life?" , we'll get the following:
@@ -209,17 +216,18 @@ bot.on("message", async message => {
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
      message.channel.send("<:bubabrain:351764290895872002>");
   }
-  if(command === "рандом"){
+  if(command === "рандом" || command === "random"){
 //     let roleName = args.join(" ");
 
 //     //Filtering the guild members only keeping those with the role
 //     //Then mapping the filtered array to their usernames
 //     let membersWithRole = message.guild.members.map(member => {return member.user.username;})
 
-
+ 
 
     return message.channel.send(message.guild.members.random().toString()+' '+args.join(" "));
 }
+
   if(command === "count") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
