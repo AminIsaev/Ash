@@ -9,8 +9,9 @@ app.listen(8080);
 setInterval(() => {
 http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
 }, 300000);
-
-
+setInterval(() => {
+http.get(`http://ash-twitch.glitch.me/`);
+}, 300000);
 var bot = new Discord.Client();
 function randomInteger(min, max) {
     var rand = min - 0.5 + Math.random() * (max - min + 1)
@@ -29,6 +30,49 @@ bot.on("ready", async() => {
 const music = new Music(bot, {
   youtubeKey: 'AIzaSyDmIvnkWSrqJ0XAxu7hxSNilk8di1jNz48'
 });
+const https = require("https");
+var fs = require('fs');
+const url =
+  "https://mixer.com/api/v1/chats/19088261/history";
+function mixf() {
+https.get(url, res => {
+  res.setEncoding("utf8");
+  let body = "";
+  res.on("data", data => {
+    body += data;
+  });
+  res.on("end", () => {
+    body = JSON.parse(body);
+    var i = 0;
+    var msg;
+    for(msg in body){
+      var textb = body[i].message.message[0].text;
+      var nameh = body[i].user_name;
+      if(nameh === "Aggro" || nameh === "PeccYz" || nameh === "Scottybot" || nameh === "HiRezTaco" || nameh === "HiRezAuvey" || nameh === "LeTigress" || nameh === "HiRezHinduman" || nameh === "HiRezFinch" || nameh === "HiRezVinny" || nameh === "Fdt" || nameh === "AminSugar"){
+            if(textb.length >= 17 && textb.indexOf("AP") + 1) { 
+              var fileContent = fs.readFileSync(".codes", "utf8");
+              var wheresCode = textb.lastIndexOf("AP");              
+              var stringTwo = textb.slice(wheresCode, wheresCode+17);
+              if(fileContent.indexOf(stringTwo) < 0){
+bot.channels.get("350521817078693889").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
+bot.channels.get("327391123188219907").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
+bot.channels.get("218919280098541568").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
+
+  fs.writeFileSync(".codes", fileContent + " " + stringTwo);
+              }        
+                                                              
+                                                              
+                                                              
+            }
+      }
+      
+            i++;
+    }
+    
+  });
+});
+}
+setInterval(mixf, 3000);
 bot.on("message", async message => {
   // This event will run on every single message received, from any channel or DM.
 
@@ -49,14 +93,11 @@ bot.on("message", async message => {
     bot.user.setActivity(args.join(" "), { type: 'WATCHING' });
   }
 
-  if(command === "тест"){
-     // for (member in bot.guilds.get(message.guild.id).members) {
-     //    console.log(member.id);
-     // }
-     for (member in message.member.user) {
-         console.log(member.id);
-     }
-
+  if(command === "код"){
+     var fileC= fs.readFileSync(".codes", "utf8");
+     var wheresCode = fileC.length;             
+     var stringTwo = fileC.slice(wheresCode-17, wheresCode);
+     message.channel.send("Последний код```"+stringTwo+"```");
   }
   // Let's go with a few common example commands! Feel free to delete or change those.
   if(command === "скажи") {
@@ -67,6 +108,10 @@ bot.on("message", async message => {
     message.delete().catch(O_o=>{});
     // And we get the bot to say the thing:
     message.channel.send(sayMessage);
+  }
+  if(command === "пикча") {
+    let rp = Math.floor(Math.random() * (601 - 1)) + 1;
+    message.channel.send("https://chop-grif.000webhostapp.com/p/pic%20("+rp+").jpg");
   }
     if(command === "спать") {
   if (message.author.id != 161854983602438145) return message.reply('Нет, ты не можешь меня выключать.');
