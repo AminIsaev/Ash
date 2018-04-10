@@ -20,16 +20,13 @@ function randomInteger(min, max) {
   }
 bot.on("ready", async() => {
   console.log(`${bot.user.username} готов к работе`);
-  try {
-    let link = await bot.generateInvite(["ADMINISTRATOR"]);
-    console.log(link);
-  } catch(e) {
-    console.log(e.stack);
-  }
+  console.log(bot.guilds.size);
+  
 });
 const music = new Music(bot, {
   youtubeKey: 'AIzaSyDmIvnkWSrqJ0XAxu7hxSNilk8di1jNz48'
 });
+
 const https = require("https");
 var fs = require('fs');
 const url =
@@ -72,7 +69,7 @@ bot.channels.get("218919280098541568").send("@everyone Новый код от "+
   });
 });
 }
-setInterval(mixf, 3000);
+setInterval(mixf, 300000);
 bot.on("message", async message => {
   // This event will run on every single message received, from any channel or DM.
 
@@ -99,6 +96,37 @@ bot.on("message", async message => {
      var stringTwo = fileC.slice(wheresCode-17, wheresCode);
      message.channel.send("Последний код```"+stringTwo+"```");
   }
+  function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+  if(command === "команда"){
+     var cArray = args.join(" ").split(" ");
+    if(cArray[9] && !cArray[10]){
+     cArray = shuffle(cArray);
+     message.channel.send("Команда 1: ```"+cArray[0]+","+cArray[1]+","+cArray[2]+","+cArray[3]+","+cArray[4]+"```Команда 2: ```"+cArray[5]+","+cArray[6]+","+cArray[7]+","+cArray[8]+","+cArray[9]+"```");
+    }
+    else
+    {
+      message.reply("Неправильное число участников (нужно 10).");
+    }
+  }
+  
   // Let's go with a few common example commands! Feel free to delete or change those.
   if(command === "скажи") {
     // makes the bot say something and delete the message. As an example, it's open to anyone to use.
@@ -108,6 +136,15 @@ bot.on("message", async message => {
     message.delete().catch(O_o=>{});
     // And we get the bot to say the thing:
     message.channel.send(sayMessage);
+  }
+ 
+  if(command === "инвайт") {
+    try {
+    let link = await bot.generateInvite(["SEND_MESSAGES", "MENTION_EVERYONE"]);
+    message.channel.send("<"+link+">");
+  } catch(e) {
+    console.log(e.stack);
+  }
   }
   if(command === "пикча") {
     let rp = Math.floor(Math.random() * (601 - 1)) + 1;
@@ -250,6 +287,9 @@ bot.on("message", async message => {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
      message.channel.send("<:DmzSad:372531904735346689>");
+  }
+  if(msg.indexOf(":joy:") + 1){
+    message.channel.send(":joy:");
   }
   if(command === "дамеоз") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
