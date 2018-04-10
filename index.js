@@ -114,19 +114,30 @@ bot.on("message", async message => {
 
   return array;
 }
+  
+/////////////// Команды для кастомок
 
   if(command === "команда"){
      var cArray = args.join(" ").split(" ");
-    if(cArray[9] && !cArray[10]){
+    if(cArray.length === 10){
      cArray = shuffle(cArray);
-     message.channel.send("Команда 1: ```"+cArray[0]+","+cArray[1]+","+cArray[2]+","+cArray[3]+","+cArray[4]+"```Команда 2: ```"+cArray[5]+","+cArray[6]+","+cArray[7]+","+cArray[8]+","+cArray[9]+"```");
+     message.channel.send("Команда для 5х5 #1: ```"+cArray[0]+","+cArray[1]+","+cArray[2]+","+cArray[3]+","+cArray[4]+"```Команда для 5х5 #2: ```"+cArray[5]+","+cArray[6]+","+cArray[7]+","+cArray[8]+","+cArray[9]+"```");
+    }
+    else if(cArray.length === 8) {
+      cArray = shuffle(cArray);
+     message.channel.send("Команда для 4х4 #1: ```"+cArray[0]+","+cArray[1]+","+cArray[2]+","+cArray[3]+"```Команда для 4х4 #2: ```"+cArray[4]+","+cArray[5]+","+cArray[6]+","+cArray[7]+"```");
+    }
+    else if(cArray.length === 6) {
+      cArray = shuffle(cArray);
+     message.channel.send("Команда для 3х3 #1: ```"+cArray[0]+","+cArray[1]+","+cArray[2]+"```Команда для 3х3 #2: ```"+cArray[3]+","+cArray[4]+","+cArray[5]+"```");
     }
     else
     {
-      message.reply("Неправильное число участников (нужно 10).");
+      message.reply("неправильное число участников. Разрешенные значения: 10, 8, 6.");
     }
   }
   
+  ////////////
   // Let's go with a few common example commands! Feel free to delete or change those.
   if(command === "скажи") {
     // makes the bot say something and delete the message. As an example, it's open to anyone to use.
