@@ -1,8 +1,17 @@
 const Discord = require("discord.js");
 const config = require("./config.json");
 const Music = require('discord.js-musicbot-addon');
+const http = require('http');
+const express = require('express');
+const app = express();
 
-
+app.listen(8080);
+setInterval(() => {
+http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 300000);
+setInterval(() => {
+http.get(`http://ash-twitch.glitch.me/`);
+}, 300000);
 var bot = new Discord.Client();
 function randomInteger(min, max) {
     var rand = min - 0.5 + Math.random() * (max - min + 1)
@@ -11,16 +20,56 @@ function randomInteger(min, max) {
   }
 bot.on("ready", async() => {
   console.log(`${bot.user.username} готов к работе`);
-  try {
-    let link = await bot.generateInvite(["ADMINISTRATOR"]);
-    console.log(link);
-  } catch(e) {
-    console.log(e.stack);
-  }
+  console.log(bot.guilds.size);
+  
 });
 const music = new Music(bot, {
   youtubeKey: 'AIzaSyDmIvnkWSrqJ0XAxu7hxSNilk8di1jNz48'
 });
+
+const https = require("https");
+var fs = require('fs');
+const url =
+  "https://mixer.com/api/v1/chats/19088261/history";
+function mixf() {
+https.get(url, res => {
+  res.setEncoding("utf8");
+  let body = "";
+  res.on("data", data => {
+    body += data;
+  });
+  res.on("end", () => {
+    body = JSON.parse(body);
+    var i = 0;
+    var msg;
+    for(msg in body){
+      var textb = body[i].message.message[0].text;
+      var nameh = body[i].user_name;
+      if(nameh === "Aggro" || nameh === "PeccYz" || nameh === "Scottybot" || nameh === "HiRezTaco" || nameh === "HiRezAuvey" || nameh === "LeTigress" || nameh === "HiRezHinduman" || nameh === "HiRezFinch" || nameh === "HiRezVinny" || nameh === "Fdt" || nameh === "AminSugar"){
+            if(textb.length >= 17 && textb.indexOf("AP") + 1) { 
+              var fileContent = fs.readFileSync(".codes", "utf8");
+              var wheresCode = textb.lastIndexOf("AP");              
+              var stringTwo = textb.slice(wheresCode, wheresCode+17);
+              if(fileContent.indexOf(stringTwo) < 0){
+bot.channels.get("350521817078693889").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
+bot.channels.get("327391123188219907").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
+bot.channels.get("218919280098541568").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
+
+  fs.writeFileSync(".codes", fileContent + " " + stringTwo);
+              }        
+                                                              
+                                                              
+                                                              
+            }
+      }
+      
+            i++;
+    }
+    
+  });
+});
+}
+setInterval(mixf, 300000);
 bot.on("message", async message => {
   // This event will run on every single message received, from any channel or DM.
 
@@ -41,15 +90,43 @@ bot.on("message", async message => {
     bot.user.setActivity(args.join(" "), { type: 'WATCHING' });
   }
 
-  if(command === "тест"){
-     // for (member in bot.guilds.get(message.guild.id).members) {
-     //    console.log(member.id);
-     // }
-     for (member in message.member.user) {
-         console.log(member.id);
-     }
-
+  if(command === "код"){
+     var fileC= fs.readFileSync(".codes", "utf8");
+     var wheresCode = fileC.length;             
+     var stringTwo = fileC.slice(wheresCode-17, wheresCode);
+     message.channel.send("Последний код```"+stringTwo+"```");
   }
+  function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+  if(command === "команда"){
+     var cArray = args.join(" ").split(" ");
+    if(cArray[9] && !cArray[10]){
+     cArray = shuffle(cArray);
+     message.channel.send("Команда 1: ```"+cArray[0]+","+cArray[1]+","+cArray[2]+","+cArray[3]+","+cArray[4]+"```Команда 2: ```"+cArray[5]+","+cArray[6]+","+cArray[7]+","+cArray[8]+","+cArray[9]+"```");
+    }
+    else
+    {
+      message.reply("Неправильное число участников (нужно 10).");
+    }
+  }
+  
   // Let's go with a few common example commands! Feel free to delete or change those.
   if(command === "скажи") {
     // makes the bot say something and delete the message. As an example, it's open to anyone to use.
@@ -59,6 +136,19 @@ bot.on("message", async message => {
     message.delete().catch(O_o=>{});
     // And we get the bot to say the thing:
     message.channel.send(sayMessage);
+  }
+ 
+  if(command === "инвайт") {
+    try {
+    let link = await bot.generateInvite(["SEND_MESSAGES", "MENTION_EVERYONE"]);
+    message.channel.send("<"+link+">");
+  } catch(e) {
+    console.log(e.stack);
+  }
+  }
+  if(command === "пикча") {
+    let rp = Math.floor(Math.random() * (601 - 1)) + 1;
+    message.channel.send("https://chop-grif.000webhostapp.com/p/pic%20("+rp+").jpg");
   }
     if(command === "спать") {
   if (message.author.id != 161854983602438145) return message.reply('Нет, ты не можешь меня выключать.');
@@ -73,7 +163,7 @@ bot.on("message", async message => {
       name: bot.user.username,
       icon_url: bot.user.avatarURL
     },
-    title: "Привет, я - Эш, бесполезный бот созданный бездельником :ok_hand:",
+    title: "Привет, я - Эш, не бесполезный((с)Fairy) бот созданный бездельником :ok_hand:",
     url: "http://vk.com/ghousemd",
     description: "Вот список того что я умею(регистр не важен):",
     fields: [{
@@ -95,7 +185,7 @@ bot.on("message", async message => {
       {
         name: "ash play <название трека или ссылка на видео или плейлист YouTube>",
         value: "Проигрываю заказанную музыку. Необходимо быть в войсе"
-      },
+      },      
       {
         name: "Coming soon..",
         value: "xD"
@@ -109,10 +199,11 @@ bot.on("message", async message => {
   }
 });
   }
-  if(command === "смотри") {
-    // makes the bot say something and delete the message. As an example, it's open to anyone to use.
-    // To get the "message" itself we join the `args` back into a string with spaces:
-    bot.user.setActivity(args.join(" "), { type: 'WATCHING' });
+  if(command === "смотри" || command === "слушай" || command === "играй") {
+    if(command === "смотри") var d = "WATCHING";
+    if(command === "слушай") var d = "LISTENING";
+    if(command === "играй") var d = "PLAYING";
+    bot.user.setActivity(args.join(" "), { type: d });
   }
 
   if(msg.indexOf("?") + 1){
@@ -177,12 +268,10 @@ bot.on("message", async message => {
   // It's good practice to ignore other bots. This also makes your bot ignore itself
   // and not get into a spam loop (we call that "botception").
   if(message.author.bot) return;
+  
   msg = message.content.toLowerCase();
-  if(msg.indexOf("баб") === 0) { message.channel.send("<:bubabrain:351764290895872002>"); }
-  if(msg.indexOf("тупой бот") === 0) { message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
-  if(msg.indexOf("глупый бот") === 0) { message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
-  if(msg.indexOf("тупой эш") === 0) { message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
-  if(msg.indexOf("глупый эш") === 0) { message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
+  if(msg.indexOf("баб") + 1) { message.channel.send("<:bubabrain:351764290895872002>"); }
+  if((msg.indexOf("тупой") + 1 || msg.indexOf("глупый") + 1) && (msg.indexOf("бот") + 1 || msg.indexOf("эш") + 1)){ message.reply("ну че ты хочешь меня нахер послать? милости просим, я тогда тебя тоже нахер пошлю, ну и чо? обнимемся вместе пойдем, да?"); }
 
   // Here we separate our "command" name, and our "arguments" for the command.
   // e.g. if we have the message "+say Is this the real life?" , we'll get the following:
@@ -199,6 +288,9 @@ bot.on("message", async message => {
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
      message.channel.send("<:DmzSad:372531904735346689>");
   }
+  if(msg.indexOf(":joy:") + 1){
+    message.channel.send(":joy:");
+  }
   if(command === "дамеоз") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
@@ -209,17 +301,18 @@ bot.on("message", async message => {
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
      message.channel.send("<:bubabrain:351764290895872002>");
   }
-  if(command === "рандом"){
+  if(command === "рандом" || command === "random"){
 //     let roleName = args.join(" ");
 
 //     //Filtering the guild members only keeping those with the role
 //     //Then mapping the filtered array to their usernames
 //     let membersWithRole = message.guild.members.map(member => {return member.user.username;})
 
-
+ 
 
     return message.channel.send(message.guild.members.random().toString()+' '+args.join(" "));
 }
+
   if(command === "count") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
