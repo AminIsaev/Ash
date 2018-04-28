@@ -4,14 +4,22 @@ const Music = require('discord.js-musicbot-addon');
 const http = require('http');
 const express = require('express');
 const app = express();
+var fs1 = require('fs');
+const lctime = fs1.readFileSync(".time", "utf8");
+var dd = Math.round(30-(Date.now()-lctime)/60000);
+function zc(){
+  fs1.writeFileSync(".time", Date.now()); }
+
+
+
 
 app.listen(8080);
 setInterval(() => {
-http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
-}, 300000);
+http.get(`http://ashbot.glitch.me/`);
+}, 30000);
 setInterval(() => {
 http.get(`http://ash-twitch.glitch.me/`);
-}, 300000);
+}, 30000);
 var bot = new Discord.Client();
 function randomInteger(min, max) {
     var rand = min - 0.5 + Math.random() * (max - min + 1)
@@ -45,15 +53,34 @@ https.get(url, res => {
     for(msg in body){
       var textb = body[i].message.message[0].text;
       var nameh = body[i].user_name;
+      
       if(nameh === "Aggro" || nameh === "PeccYz" || nameh === "Scottybot" || nameh === "HiRezTaco" || nameh === "HiRezAuvey" || nameh === "LeTigress" || nameh === "HiRezHinduman" || nameh === "HiRezFinch" || nameh === "HiRezVinny" || nameh === "Fdt" || nameh === "AminSugar"){
-            if(textb.length >= 17 && textb.indexOf("AP") + 1) { 
+       if(nameh === "Scottybot" || nameh === "AminSugar"){
+      var textbArray = textb.toLowerCase();
+      if(textbArray.indexOf("code") + 1 && textbArray.indexOf(":") + 1) {
+         var fileContent = fs.readFileSync(".codes", "utf8");
+var s1 = textbArray.split(":")[1].split(" ")[0];
+        if(s1) { var fcode = s1; } else { var fcode = textbArray.split(":")[1].split(" ")[1]; }
+
+        if(fileContent.indexOf(fcode) < 0){
+             zc();
+             bot.channels.get("350521817078693889").send("@everyone Новый код от "+nameh+" (действует 30 минут)```"+fcode+"```Чтобы узнать сколько еще работает код - введите ``эш код``");
+             bot.channels.get("327391123188219907").send("@everyone Новый код от "+nameh+" (действует 30 минут)```"+fcode+"```");
+             bot.channels.get("218919280098541568").send("@everyone Новый код от "+nameh+" (действует 30 минут)```"+fcode+"```");
+             
+           fs.writeFileSync(".codes", fileContent + " " + fcode);
+          }
+         }
+       }
+        if(textb.length >= 17 && textb.indexOf("AP") + 1) { 
               var fileContent = fs.readFileSync(".codes", "utf8");
               var wheresCode = textb.lastIndexOf("AP");              
               var stringTwo = textb.slice(wheresCode, wheresCode+17);
               if(fileContent.indexOf(stringTwo) < 0){
+                zc();
 bot.channels.get("350521817078693889").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
 bot.channels.get("327391123188219907").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
-bot.channels.get("218919280098541568").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
+ bot.channels.get("218919280098541568").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
 
   fs.writeFileSync(".codes", fileContent + " " + stringTwo);
               }        
@@ -69,7 +96,7 @@ bot.channels.get("218919280098541568").send("@everyone Новый код от "+
   });
 });
 }
-setInterval(mixf, 300000);
+setInterval(mixf, 3000);
 bot.on("message", async message => {
   // This event will run on every single message received, from any channel or DM.
 
@@ -92,11 +119,14 @@ bot.on("message", async message => {
 
   if(command === "код"){
      var fileC= fs.readFileSync(".codes", "utf8");
-     var wheresCode = fileC.length;             
-     var stringTwo = fileC.slice(wheresCode-17, wheresCode);
-     message.channel.send("Последний код```"+stringTwo+"```");
+     var wheresCode = fileC.split(" ");
+     var stringTwo = wheresCode[wheresCode.length - 1];
+    
+    //if(dd < 0){ var srok = "(недействителен, истек срок)"; } else { var srok = "(действителен, осталось примерно "+dd+" min.)"; }
+     message.channel.send("Последний код ```"+stringTwo+"```");
   }
   function shuffle(array) {
+    
   var currentIndex = array.length, temporaryValue, randomIndex;
 
   // While there remain elements to shuffle...
@@ -137,7 +167,7 @@ bot.on("message", async message => {
     }
   }
   
-  ////////////
+//////////// Команды для кастомок
   // Let's go with a few common example commands! Feel free to delete or change those.
   if(command === "скажи") {
     // makes the bot say something and delete the message. As an example, it's open to anyone to use.
@@ -158,8 +188,9 @@ bot.on("message", async message => {
   }
   }
   if(command === "пикча") {
-    let rp = Math.floor(Math.random() * (601 - 1)) + 1;
-    message.channel.send("https://chop-grif.000webhostapp.com/p/pic%20("+rp+").jpg");
+    let rp = Math.floor(Math.random() * (1001 - 1)) + 1;
+    if(rp <= 600) { var lp = "https://chop-grif.000webhostapp.com/p/pic%20("+rp+").jpg"; } else { var lp = "https://aminisaev.000webhostapp.com/p/pic%20("+rp+").jpg";  }
+    message.channel.send(lp);
   }
     if(command === "спать") {
   if (message.author.id != 161854983602438145) return message.reply('Нет, ты не можешь меня выключать.');
@@ -167,6 +198,26 @@ bot.on("message", async message => {
     process.exit(0);
 
   }
+  if(command === "привет") {
+var hir = Math.floor(Math.random()*(6-1+1)+1);
+var hi;
+    if(hir === 1)hi = "<:ashHi1:436075474444222466>";
+    if(hir === 2)hi = "<:ashHi2:436077745852907530>";
+    if(hir === 3)hi = "<:ashHi3:436077746788237314>";
+    if(hir === 4)hi = "<:ashHi4:436077748004454410>";
+    if(hir === 5)hi = "<:ashHi5:436078466606039040>";
+    if(hir === 6)hi = "<:ashHi6:436078891459936256>";
+    
+ message.channel.send(hi);
+
+  }
+  if(command === "число") {
+var list = bot.guilds.array().sort();
+    console.log(list);
+
+  }
+  
+  
   if(command === `помощь`){
     message.channel.send({embed: {
     color: 3447003,
@@ -307,21 +358,19 @@ bot.on("message", async message => {
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
      message.channel.send("https://pp.userapi.com/c638321/v638321338/5b078/dzSjavYaNLs.jpg");
   }
+  if(command === "тестик") {
+    var tl = message.guild.members.map(member => {return member.user.username+member.user.id;});
+console.log(tl);
+  }
+  
   if(command === "бабы") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
      message.channel.send("<:bubabrain:351764290895872002>");
   }
   if(command === "рандом" || command === "random"){
-//     let roleName = args.join(" ");
 
-//     //Filtering the guild members only keeping those with the role
-//     //Then mapping the filtered array to their usernames
-//     let membersWithRole = message.guild.members.map(member => {return member.user.username;})
-
- 
-
-    return message.channel.send(message.guild.members.random().toString()+' '+args.join(" "));
+    message.channel.send(message.guild.members.random().toString()+' '+args.join(" "));
 }
 
   if(command === "count") {
@@ -341,9 +390,8 @@ message.channel.send(memberCount+" участников");
   }
 
 
-  if(command === "первый") {
-    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-    // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
+  if(msg.indexOf("первый") + 1) {
+ 
     const m = await message.channel.send("Первый?");
     m.edit(`Сорок седьмой!`);
   }
