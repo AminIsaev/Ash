@@ -4,15 +4,21 @@ const Music = require('discord.js-musicbot-addon');
 const http = require('http');
 const express = require('express');
 const app = express();
-var fs1 = require('fs');
-const lctime = fs1.readFileSync(".time", "utf8");
-var dd = Math.round(30-(Date.now()-lctime)/60000);
-function zc(){
-  fs1.writeFileSync(".time", Date.now()); }
 
+var fs = require('fs');
+var dbFile = './sqlite.db';
+var exists = fs.existsSync(dbFile);
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database(dbFile);
+// db.run('UPDATE users SET xp = 1 WHERE uid = 161854983602438145');
+// db.run('UPDATE users SET last_drop = 0');
+// const dbClass = require("./dbclass.js");
+// const dbclass = new dbClass();
 
-
-
+// if(db.all("SELECT COUNT(*) FROM users", function(err, rows){return rows;}) == 1){
+// }
+// console.log(dbclass.setPoints("161854983602438145",666));
+// console.log(dbclass.count('users'));
 app.listen(8080);
 setInterval(() => {
 http.get(`http://ashbot.glitch.me/`);
@@ -26,6 +32,10 @@ function randomInteger(min, max) {
     rand = Math.round(rand);
     return rand;
   }
+  function declOfNum(number, titles) {  
+    let cases = [2, 0, 1, 1, 1, 2];  
+    return titles[ (number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5] ];  
+}
 bot.on("ready", async() => {
   console.log(`${bot.user.username} готов к работе`);
   console.log(bot.guilds.size);
@@ -55,39 +65,50 @@ https.get(url, res => {
       var nameh = body[i].user_name;
       
       if(nameh === "Aggro" || nameh === "PeccYz" || nameh === "Scottybot" || nameh === "HiRezTaco" || nameh === "HiRezAuvey" || nameh === "LeTigress" || nameh === "HiRezHinduman" || nameh === "HiRezFinch" || nameh === "HiRezVinny" || nameh === "Fdt" || nameh === "AminSugar"){
-       if(nameh === "Scottybot" || nameh === "AminSugar"){
+      if(nameh === "Aggro" || nameh === "PeccYz" || nameh === "Scottybot" || nameh === "HiRezTaco" || nameh === "HiRezAuvey" || nameh === "LeTigress" || nameh === "HiRezHinduman" || nameh === "HiRezFinch" || nameh === "HiRezVinny" || nameh === "Fdt" || nameh === "AminSugar"){
       var textbArray = textb.toLowerCase();
-      if(textbArray.indexOf("code") + 1 && textbArray.indexOf(":") + 1) {
-         var fileContent = fs.readFileSync(".codes", "utf8");
-var s1 = textbArray.split(":")[1].split(" ")[0];
-        if(s1) { var fcode = s1; } else { var fcode = textbArray.split(":")[1].split(" ")[1]; }
+      textbArray = textbArray.split(" ");
+      var bArr = textb.split(" ");
 
-        if(fileContent.indexOf(fcode) < 0){
-             zc();
-             bot.channels.get("350521817078693889").send("@everyone Новый код от "+nameh+" (действует 30 минут)```"+fcode+"```Чтобы узнать сколько еще работает код - введите ``эш код``");
-             bot.channels.get("327391123188219907").send("@everyone Новый код от "+nameh+" (действует 30 минут)```"+fcode+"```");
-             bot.channels.get("218919280098541568").send("@everyone Новый код от "+nameh+" (действует 30 минут)```"+fcode+"```");
+function find(arg){
+  return textbArray.find(function(textbArray) {return textbArray == arg;});
+}
+function findIndex(arg){
+  return textbArray.findIndex(function(textbArray) {return textbArray == arg;});
+}
+var ok = 0;
+if((findIndex("is")-findIndex("code")) == 1  || findIndex("is") > -1 && findIndex("code") > -1 && textbArray[findIndex("is")-1] == "code"){
+  var fcode = textbArray[findIndex("is")+1];
+  var ocode = bArr[findIndex("is")+1];
+  ok = 1;
+}
+
+if(findIndex("code:") > -1){
+  var fcode = textbArray[findIndex("code:")+1];
+  var ocode = bArr[findIndex("code:")+1];
+  ok = 1;
+}
+  if((findIndex(":")-findIndex("code")) == 1 || findIndex(":") > -1 && findIndex("code") > -1 && textbArray[findIndex(":")-1] == "code"){
+  var fcode = textbArray[findIndex(":")+1];
+  var ocode = bArr[findIndex(":")+1];
+  ok = 1;
+}
+var re = /^[a-zа-яё]+$/i;
+var fileContent = fs.readFileSync(".codes", "utf8");
+var nfc = fileContent.split(" ");
+function find(arg){
+  return nfc.find(function(nfc) {return nfc == arg;});
+}
+if(re.test(fcode) && ok == 1 && find(fcode) === undefined){
+          console.log(fcode);
+             bot.channels.get("440413453199343616").send("@everyone Новый код от "+nameh+"```"+ocode+"```Оригинальное сообщение ```"+textb+"```");
+             bot.channels.get("436599091238010880").send("@everyone Новый код от "+nameh+"```"+ocode+"```Оригинальное сообщение ```"+textb+"```");
+             bot.channels.get("327391123188219907").send("@everyone Новый код от "+nameh+"```"+ocode+"```Оригинальное сообщение ```"+textb+"```");
+             bot.channels.get("218919280098541568").send("@everyone Новый код от "+nameh+"```"+ocode+"```Оригинальное сообщение ```"+textb+"```");
              
            fs.writeFileSync(".codes", fileContent + " " + fcode);
           }
-         }
        }
-        if(textb.length >= 17 && textb.indexOf("AP") + 1) { 
-              var fileContent = fs.readFileSync(".codes", "utf8");
-              var wheresCode = textb.lastIndexOf("AP");              
-              var stringTwo = textb.slice(wheresCode, wheresCode+17);
-              if(fileContent.indexOf(stringTwo) < 0){
-                zc();
-bot.channels.get("350521817078693889").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
-bot.channels.get("327391123188219907").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
- bot.channels.get("218919280098541568").send("@everyone Новый код от "+nameh+"```"+stringTwo+"```");
-
-  fs.writeFileSync(".codes", fileContent + " " + stringTwo);
-              }        
-                                                              
-                                                              
-                                                              
-            }
       }
       
             i++;
@@ -96,7 +117,7 @@ bot.channels.get("327391123188219907").send("@everyone Новый код от "+
   });
 });
 }
-setInterval(mixf, 3000);
+setInterval(mixf, 5000);
 bot.on("message", async message => {
   // This event will run on every single message received, from any channel or DM.
 
@@ -104,7 +125,6 @@ bot.on("message", async message => {
   // and not get into a spam loop (we call that "botception").
   if(message.author.bot) return;
   msg = message.content.toLowerCase();
-
   if(msg.indexOf(config.prefixt)!== 0) return;
 
   // Here we separate our "command" name, and our "arguments" for the command.
@@ -145,7 +165,44 @@ bot.on("message", async message => {
   return array;
 }
   
-/////////////// Команды для кастомок
+  if(command === "передай"){
+    var arr = args.join(" ").split(" ");
+    var uid = arr[0].replace(/[^-0-9]/gi,'');
+    var howmany = arr[1];
+    if(howmany > 0){
+     let sql = `SELECT *
+           FROM users
+           WHERE uid  = `+message.author.id;
+ 
+db.get(sql, (err, row) => {
+    if(parseInt(row.points) < howmany){
+       message.reply("не хватает поинтов. У тебя "+howmany); 
+    }
+    else
+    {
+         let sql1 = `SELECT *
+           FROM users
+           WHERE uid  = `+uid;
+ 
+db.get(sql1, (err, row1) => {
+    if(row1.uid != uid){
+      message.reply("такой пользователь не найден.");  
+    }
+  else if(row1.uid == message.author.id) {
+      message.reply("ты не можешь передать поинты себе, чсвшник <:fairyface:343085098792648704>");
+  }
+  else
+  {     var points = parseInt(row1.points)+parseInt(howmany);
+        db.run('UPDATE users SET points = '+(points)+' WHERE uid = '+uid);
+        db.run('UPDATE users SET points = '+(parseInt(row.points)-howmany)+' WHERE uid = '+message.author.id);
+        message.channel.send("<@"+message.author.id+"> передал "+"<@"+uid+"> "+howmany+" "+declOfNum(howmany, ['поинт.', 'поинта.', 'поинтов.']));
+  }
+});
+    }
+});
+    }
+    else message.reply("числов передаваемых поинтов должно быть больше 0.");
+  }
 
   if(command === "команда"){
      var cArray = args.join(" ").split(" ");
@@ -178,7 +235,78 @@ bot.on("message", async message => {
     // And we get the bot to say the thing:
     message.channel.send(sayMessage);
   }
+   // Let's go with a few common example commands! Feel free to delete or change those.
+  if(command === "тест") {
+    let sql = `SELECT * FROM users`;
+   db.all(sql, [], (err, rows) => {
+   message.reply(rows.xp);
+   });
+  }
+  if(command === "хентай"){
+    if(message.channel.nsfw == true){
+    var hurl = "https://nekos.life/api/v2/img/Random_hentai_gif";
+    https.get(hurl, res => {
+  res.setEncoding("utf8");
+  let body = "";
+  res.on("data", data => {
+    body += data;
+  });
+  res.on("end", () => {
+    body = JSON.parse(body);
+    message.channel.send({ files: [body.url] });
+  });
+    });}
+    else message.channel.send("Могу постить хентай только на nsfw-каналах.");
+  }
+  if(command === "лут" || command === "лийгхт"){
+  if(command === "лит" && message.author.id != 187265418358947841){message.reply("ты не дамеоз.");}
+    else {
+ var r = randomInteger(1,100);
+ if(r == 50){
+    message.channel.send();   
+ }
+ let sql = `SELECT *
+           FROM users
+           WHERE uid  = `+message.author.id;
  
+// first row only
+db.get(sql, (err, row) => {
+  if (err) {
+    return console.error(err.message);
+  }
+  var drop = parseInt(row.last_drop);
+  var points = parseInt(row.points);
+  if(drop < Date.now()){
+    let loot = randomInteger(1,20);
+    var sk = declOfNum(loot, ['поинт', 'поинта', 'поинтов']);
+    db.run('UPDATE users SET points = '+(loot+points)+', last_drop = '+(Date.now()+3600000)+' WHERE uid = '+message.author.id);
+    message.channel.send(message.author.username+' получает '+loot+' '+sk+'.');
+  }
+  else {
+    let whenh = (drop-Date.now())/1000/3600*60;
+    message.channel.send('Эта команда доступна один раз в час, попробуйте через '+Math.floor(whenh)+' '+declOfNum(Math.floor(whenh), ['минута.', 'минуты.', 'минут.']));
+  }
+});
+    }
+  }
+  if(command === "поинты") {
+
+  let sql = `SELECT *
+           FROM users
+           WHERE uid  = `+message.author.id;
+
+ 
+// first row only
+db.get(sql, (err, row) => {
+  if (err) {
+    return console.error(err.message);
+  }
+        var sk = declOfNum(row.points, ['поинт', 'поинта', 'поинтов']);
+
+    message.channel.send(row.points+' '+sk+'.');
+  
+});
+  }
   if(command === "инвайт") {
     try {
     let link = await bot.generateInvite(["SEND_MESSAGES", "MENTION_EVERYONE"]);
@@ -190,7 +318,7 @@ bot.on("message", async message => {
   if(command === "пикча") {
     let rp = Math.floor(Math.random() * (1001 - 1)) + 1;
     if(rp <= 600) { var lp = "https://chop-grif.000webhostapp.com/p/pic%20("+rp+").jpg"; } else { var lp = "https://aminisaev.000webhostapp.com/p/pic%20("+rp+").jpg";  }
-    message.channel.send(lp);
+    message.channel.send({ files: [lp] });
   }
     if(command === "спать") {
   if (message.author.id != 161854983602438145) return message.reply('Нет, ты не можешь меня выключать.');
@@ -356,26 +484,23 @@ bot.on("message", async message => {
   if(command === "дамеоз") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
-     message.channel.send("https://pp.userapi.com/c638321/v638321338/5b078/dzSjavYaNLs.jpg");
+     message.channel.send({ files: ['https://pp.userapi.com/c638321/v638321338/5b078/dzSjavYaNLs.jpg'] });
   }
-  if(command === "тестик") {
-    var tl = message.guild.members.map(member => {return member.user.username+member.user.id;});
-console.log(tl);
+
+  if(command === "добавить1" && message.author.id == 161854983602438145){
+       message.guild.members.map(member => {db.run('INSERT INTO users (uid, points, last_drop) SELECT '+member.user.id+' ,0,0 WHERE NOT EXISTS(SELECT 1 FROM users WHERE uid = '+member.user.id+')')});  
   }
+ 
   
   if(command === "бабы") {
-    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-    // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
+ 
      message.channel.send("<:bubabrain:351764290895872002>");
   }
   if(command === "рандом" || command === "random"){
-
     message.channel.send(message.guild.members.random().toString()+' '+args.join(" "));
 }
 
   if(command === "count") {
-    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-    // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
 var memberCount = bot.guilds.get(message.guild.id).memberCount;
 message.channel.send(memberCount+" участников");
   }

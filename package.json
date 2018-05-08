@@ -14,11 +14,10 @@
     "discord.js": "^11.3.2",
     "discord.js-musicbot-addon": "^1.10.3-aplha",
     "ejs": "^2.5.6",
-    "express": "^4.15.2",
+    "express": "*",
     "opusscript": "0.0.6",
     "hirez.js": "1.0.3",
-    "sqlite3": "*",
-    "sequelize": "*"
+    "sqlite3": "^4.0.0"
   },
   "devDependencies": {
     "request": "^2.81.0",
