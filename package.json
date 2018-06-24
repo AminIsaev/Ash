@@ -16,8 +16,11 @@
     "ejs": "^2.5.6",
     "express": "*",
     "opusscript": "0.0.6",
-    "hirez.js": "1.0.3",
-    "sqlite3": "^4.0.0"
+    "sqlite3": "^4.0.0",
+    "hirez.js": "*",
+    "fetch": "^1.1.0",
+    "md5": "^2.2.1",
+    "moment": "^2.17.1"
   },
   "devDependencies": {
     "request": "^2.81.0",
